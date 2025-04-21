@@ -1,6 +1,11 @@
-FROM maven:3.9.6-eclipse-temurin-23 as builder
+ARG MAVEN_VERSION=3.9.6-eclipse-temurin-21-alpine
+ARG JDK_VERSION=21-jre-alpine
+ARG BASE_PATH=/app
 
-WORKDIR /app
+FROM maven:${MAVEN_VERSION} AS builder
+
+ARG BASE_PATH
+WORKDIR ${BASE_PATH}
 
 COPY pom.xml .
 
@@ -10,12 +15,15 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests
 
-FROM openjdk:23-jdk-slim
+FROM eclipse-temurin:${JDK_VERSION}
 
-WORKDIR /app
+ARG BASE_PATH
+WORKDIR ${BASE_PATH}
 
-COPY --from=builder /app/target/*.jar app.jar
+COPY --from=builder ${BASE_PATH}/target/*.jar app.jar
 
-EXPOSE 8081
+ARG PORT_APP=8080
+ENV PORT=${PORT_APP}
+EXPOSE $PORT
 
 CMD ["java", "-jar", "app.jar"]
