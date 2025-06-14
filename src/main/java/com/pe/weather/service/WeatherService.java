@@ -15,6 +15,7 @@ public class WeatherService implements IWeatherService {
 
     @Override
     public Mono<WeatherResponse> getWeatherByCity(String city) {
+
         return weatherRepository.findByCity(city)
                 .map(this::buildWeatherResponse);
     }

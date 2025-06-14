@@ -6,7 +6,8 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface IWeatherRepository extends ReactiveMongoRepository<Weather, String> {
+public interface IWeatherRepository extends ReactiveMongoRepository<Weather, String>{
 
     Mono<Weather> findByCity(String city);
+
 }
